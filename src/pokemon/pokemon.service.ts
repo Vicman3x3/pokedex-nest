@@ -18,12 +18,8 @@ export class PokemonService {
     try{
       const pokemon = await this.pokemonModel.create(createPokemonDto);
       return pokemon;
-    } catch(err){
-      if(err.code === 11000){
-        throw new BadRequestException(`El Puchamon ${JSON.stringify(err.keyValue)} ya existe en base de datos`)
-      }
-      console.log(err);
-      throw new InternalServerErrorException(`No se puede crear el Pokemon - revisar los logs`)
+    } catch(error){
+      this.handleExceptions(error);
     }
   }
 
@@ -53,11 +49,42 @@ export class PokemonService {
     return pokemon;
   }
 
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
+  async update(termino: string, updatePokemonDto: UpdatePokemonDto) {
+
+
+    const pokemon = await this.findOne(termino);
+
+    if(updatePokemonDto.name){
+      updatePokemonDto.name = updatePokemonDto.name.toLowerCase();
+
+
+      try {
+              await pokemon.updateOne(updatePokemonDto);
+              return {...pokemon.toJSON(), ...updatePokemonDto};
+
+      } catch (error) {
+
+        this.handleExceptions(error);
+
+      }
+
+
+    }
+
+
   }
 
   remove(id: number) {
     return `This action removes a #${id} pokemon`;
   }
+
+
+  private handleExceptions(error: any){
+    if(error.code === 11000){
+      throw new BadRequestException(`El Puchamon ${JSON.stringify(error.keyValue)} ya existe en base de datos`)
+    }
+    console.log(error);
+    throw new InternalServerErrorException(`No se puede crear el Pokemon - revisar los logs`)
+  }
+
 }
