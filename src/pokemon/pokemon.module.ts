@@ -9,10 +9,10 @@ import { Pokemon, PokemonSchema } from './entities/pokemon.entity';
   providers: [PokemonService],
   imports:[
     MongooseModule.forFeature([
-       {
+      {
         name:Pokemon.name,
         schema: PokemonSchema,
-       }
+      }
     ])
   ]
 })
