@@ -74,8 +74,19 @@ export class PokemonService {
 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(id: string) {
+    // const pokemon = await this.findOne(id);
+    // await pokemon.deleteOne();
+    // return {id};
+    
+    // const resultado = this.pokemonModel.findByIdAndDelete(id);
+
+
+    const { deletedCount } = await this.pokemonModel.deleteOne({_id: id});
+
+    if(deletedCount === 0) throw new BadRequestException(`Pokemon con el ID "${id}" no se encuentra`)
+    return;
+
   }
 
 
