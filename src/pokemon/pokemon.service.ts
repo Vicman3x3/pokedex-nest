@@ -50,45 +50,23 @@ export class PokemonService {
   }
 
   async update(termino: string, updatePokemonDto: UpdatePokemonDto) {
-
-
     const pokemon = await this.findOne(termino);
-
     if(updatePokemonDto.name){
       updatePokemonDto.name = updatePokemonDto.name.toLowerCase();
-
-
       try {
               await pokemon.updateOne(updatePokemonDto);
               return {...pokemon.toJSON(), ...updatePokemonDto};
-
       } catch (error) {
-
         this.handleExceptions(error);
-
       }
-
-
     }
-
-
   }
 
   async remove(id: string) {
-    // const pokemon = await this.findOne(id);
-    // await pokemon.deleteOne();
-    // return {id};
-    
-    // const resultado = this.pokemonModel.findByIdAndDelete(id);
-
-
     const { deletedCount } = await this.pokemonModel.deleteOne({_id: id});
-
     if(deletedCount === 0) throw new BadRequestException(`Pokemon con el ID "${id}" no se encuentra`)
     return;
-
   }
-
 
   private handleExceptions(error: any){
     if(error.code === 11000){
